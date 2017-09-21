@@ -2,14 +2,10 @@
     <string name="app_name">Personality-Test</string>
 
     <!--Introduction screen-->
-    <string name="intro_welcome_text" formatted="true">Dear user,
-
-    Purpose of this application is to show one of many possible solutions for QUIZ problem.
-    All solutions and technics taken based on available requirements and time savings.
-    During development, I kept in mind possible extending of functionality.
-
-    Press START to continue.
-    </string>
+    <string name="intro_welcome_text" formatted="true">Now you are closer to your goal!\n
+        Answer on few our questions, that we could know you better :)</string>
     <string name="intro_title">Introduction</string>
-    <string name="start">start</string>
+    <string name="get_started">get started</string>
+    <string name="welcome">Welcome!</string>
+    <string name="intro_questions_and_answers">Questions and answers</string>
 </resources>
