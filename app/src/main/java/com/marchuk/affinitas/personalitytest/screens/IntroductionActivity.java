@@ -1,19 +1,19 @@
 package com.marchuk.affinitas.personalitytest.screens;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import com.marchuk.affinitas.personalitytest.R;
 
 /**
+ * Introduction screen for question/answer application
+ * <p>
  * Created by Eugene on 13.09.2017.
  */
 public class IntroductionActivity extends Activity {
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -25,7 +25,6 @@ public class IntroductionActivity extends Activity {
      * open next page/activity
      */
     public void startQuestionAnswerScreen(View view) {
-         // TODO: start next screen
-        Toast.makeText(this, "Start button pressed", Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(this, QuestionActivity.class));
     }
 }
