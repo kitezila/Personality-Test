@@ -7,6 +7,7 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v13.app.FragmentPagerAdapter;
+import android.widget.Toast;
 
 import com.marchuk.affinitas.personalitytest.R;
 import com.marchuk.affinitas.personalitytest.data.IQuestion;
@@ -46,7 +47,8 @@ public class QuestionActivity extends Activity {
         mQScreenBinding.qaViewpagerQuestionContainer.getAdapter().notifyDataSetChanged();
     }
 
-    private static class QAAdapter extends FragmentPagerAdapter {
+    private class QAAdapter extends FragmentPagerAdapter
+            implements QAPageFragment.OnAnswerConfirmListener {
         private final List<IQuestion> mData;
 
         QAAdapter(FragmentManager fm, List<IQuestion> data) {
@@ -55,15 +57,28 @@ public class QuestionActivity extends Activity {
         }
 
         @Override
+        public CharSequence getPageTitle(int position) {
+            return "Page " + position;
+        }
+
+        @Override
         public Fragment getItem(int position) {
             QAPageFragment qaPageFragment = new QAPageFragment();
             qaPageFragment.setQuestion(mData.get(position));
+            qaPageFragment.setAnswerListener(this);
             return qaPageFragment;
         }
 
         @Override
         public int getCount() {
             return mData != null ? mData.size() : 0;
+        }
+
+        @Override
+        public void onAnswerConfirmed(String question, String answer) {
+            Toast.makeText(QuestionActivity.this,
+                    "Question: " + question + "\nAnswer: " + answer, Toast.LENGTH_SHORT)
+                    .show();
         }
     }
 }

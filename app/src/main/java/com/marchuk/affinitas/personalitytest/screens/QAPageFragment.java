@@ -1,7 +1,6 @@
 package com.marchuk.affinitas.personalitytest.screens;
 
 import android.app.Fragment;
-import android.content.Context;
 import android.databinding.ObservableField;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,12 +8,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.marchuk.affinitas.personalitytest.data.IQuestion;
 import com.marchuk.affinitas.personalitytest.databinding.QaPageBinding;
 import com.marchuk.affinitas.personalitytest.screens.widgets.AnswerSelector;
 import com.marchuk.affinitas.personalitytest.screens.widgets.AnswerViewFabric;
+
+import java.lang.ref.WeakReference;
 
 /**
  * Page of question/answer. Answer will be selected/specified by user
@@ -25,11 +25,10 @@ public class QAPageFragment extends Fragment {
     private static final String TAG = QAPageFragment.class.getSimpleName();
 
     private IQuestion mQuestion;
+    private WeakReference<OnAnswerConfirmListener> mAnswerListener;
 
-    public void setQuestion(IQuestion question) {
-        Log.d(TAG, "Setting question: " + question);
-
-        this.mQuestion = question;
+    {
+        setRetainInstance(true);
     }
 
     @Nullable
@@ -63,6 +62,22 @@ public class QAPageFragment extends Fragment {
     }
 
     /**
+     * @param question to be shown
+     */
+    public void setQuestion(IQuestion question) {
+        Log.d(TAG, "Setting question: " + question);
+
+        this.mQuestion = question;
+    }
+
+    /**
+     * @param listener for answer on question, confirmed by user
+     */
+    public void setAnswerListener(OnAnswerConfirmListener listener) {
+        mAnswerListener = new WeakReference<>(listener);
+    }
+
+    /**
      * Data container for question page layout
      */
     public class QuestionPageModel {
@@ -78,16 +93,28 @@ public class QAPageFragment extends Fragment {
         }
 
         /**
-         * Submit {@link #answer}.
-         *
-         * @deprecated TODO: implementation required
+         * Submit {@link #answer} to listener {@link OnAnswerConfirmListener}.
          */
         public void submitAnswer() {
-            Context context = getActivity();
-            if (context != null) {
-                Toast.makeText(context, "Answer submitted: " + answer.get(), Toast.LENGTH_SHORT)
-                        .show();
+            Log.d(TAG, String.format("Submitting: '%s' > '%s'", question, answer));
+
+            OnAnswerConfirmListener listener =
+                    mAnswerListener == null ? null : mAnswerListener.get();
+
+            if (listener != null) {
+                listener.onAnswerConfirmed(question, answer.get());
             }
         }
+    }
+
+    /**
+     * listener for answer from question page
+     */
+    interface OnAnswerConfirmListener {
+        /**
+         * @param question that was asked from user
+         * @param answer   selected answer
+         */
+        void onAnswerConfirmed(String question, String answer);
     }
 }
