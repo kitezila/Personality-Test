@@ -16,6 +16,8 @@ import com.marchuk.affinitas.personalitytest.screens.widgets.AnswerViewFabric;
 
 import java.lang.ref.WeakReference;
 
+import io.reactivex.Completable;
+
 /**
  * Page of question/answer. Answer will be selected/specified by user
  * <p>
@@ -96,14 +98,9 @@ public class QAPageFragment extends Fragment {
          * Submit {@link #answer} to listener {@link OnAnswerConfirmListener}.
          */
         public void submitAnswer() {
-            Log.d(TAG, String.format("Submitting: '%s' > '%s'", question, answer));
-
-            OnAnswerConfirmListener listener =
-                    mAnswerListener == null ? null : mAnswerListener.get();
-
-            if (listener != null) {
-                listener.onAnswerConfirmed(question, answer.get());
-            }
+            Completable.fromRunnable(
+                    () -> mAnswerListener.get().onAnswerConfirmed(question, answer.get()))
+                    .subscribe(() -> {}, (e) -> Log.e(TAG, "Can't populate answer", e));
         }
     }
 
