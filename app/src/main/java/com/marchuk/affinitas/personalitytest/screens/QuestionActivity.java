@@ -12,13 +12,16 @@ import android.support.v13.app.FragmentPagerAdapter;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.marchuk.affinitas.personalitytest.App;
 import com.marchuk.affinitas.personalitytest.R;
 import com.marchuk.affinitas.personalitytest.data.IQuestion;
-import com.marchuk.affinitas.personalitytest.data.source.QuestionDataStub;
+import com.marchuk.affinitas.personalitytest.data.source.QuestionDataSource;
 import com.marchuk.affinitas.personalitytest.databinding.QuestionScreenBinding;
 
 import java.util.LinkedList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import io.reactivex.Maybe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -34,12 +37,19 @@ public class QuestionActivity extends Activity {
     private static final String TAG = QuestionActivity.class.getSimpleName();
 
     private final List<IQuestion> mData = new LinkedList<>();
-    private QuestionScreenBinding mQScreenBinding;
     private final CompositeDisposable disposable = new CompositeDisposable();
+
+    private QuestionScreenBinding mQScreenBinding;
+
+    @Inject
+    QuestionDataSource mDataSource;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        App.getDataSourceComponent().inject(this);
+
         mQScreenBinding = DataBindingUtil
                 .setContentView(this, R.layout.question_screen);
 
@@ -60,10 +70,9 @@ public class QuestionActivity extends Activity {
     private void requestDataAsync() {
         // show progress dialog before data request
         final ProgressDialog progressDialog = ProgressDialog
-                .show(this, getString(R.string.qa_screen_progress_dialog_title),
-                        getString(R.string.qa_screen_progress_dialog_text), true);
+                .show(this, null, getString(R.string.qa_screen_progress_dialog_text), true);
 
-        disposable.add(Maybe.fromCallable(() -> new QuestionDataStub().getQuestions())
+        disposable.add(Maybe.fromCallable(() -> mDataSource.getQuestions())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnEvent((a, b) -> progressDialog.dismiss())

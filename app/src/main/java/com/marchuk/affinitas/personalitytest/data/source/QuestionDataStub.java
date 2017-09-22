@@ -9,6 +9,7 @@ import com.marchuk.affinitas.personalitytest.data.IQuestion;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Ievgen on 20.09.2017.
@@ -17,6 +18,7 @@ import java.util.List;
  */
 public class QuestionDataStub implements QuestionDataSource {
     private static final String TAG = QuestionDataSource.class.getSimpleName();
+    private static final long REQUEST_DELAY_SEC = 3;
     private final List<IQuestion> mData;
 
     {
@@ -25,14 +27,29 @@ public class QuestionDataStub implements QuestionDataSource {
                 new AnswerOptionStub("Elephant", "Kangaroo", "Dog")));
         mData.add(new QuestionStub("What year today?",
                 new AnswerOptionStub("2012", "1212", "777")));
+        mData.add(new QuestionStub("What year today?",
+                new AnswerOptionStub("2012", "1212", "777")));
+        mData.add(new QuestionStub("What year today?",
+                new AnswerOptionStub("2012", "1212", "777")));
+        mData.add(new QuestionStub("What year today?",
+                new AnswerOptionStub("2012", "1212", "777")));
+
 //        mData.add(new QuestionStub("What is your age?", new AnswerRangeStub(10, 14)));
+
+        Log.d(TAG, "Constructed");
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        Log.d(TAG, "Destroyed");
+        super.finalize();
     }
 
     @Override
     public List<IQuestion> getQuestions() {
         Log.d(TAG, "Data request started");
         try {
-            Thread.sleep(2000);
+            Thread.sleep(TimeUnit.SECONDS.toMillis(REQUEST_DELAY_SEC));
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
