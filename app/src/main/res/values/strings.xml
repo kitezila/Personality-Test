@@ -9,4 +9,7 @@
     <string name="welcome">Welcome!</string>
     <string name="intro_questions_and_answers">Questions and answers</string>
     <string name="confirm">Confirm</string>
+    <string name="retry">retry</string>
+    <string name="qa_screen_progress_dialog_title">Loading questions from server</string>
+    <string name="qa_screen_progress_dialog_text">loading...</string>
 </resources>
