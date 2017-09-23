@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
+import android.database.DataSetObserver;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,8 +19,10 @@ import com.marchuk.affinitas.personalitytest.data.IQuestion;
 import com.marchuk.affinitas.personalitytest.data.source.QuestionDataSource;
 import com.marchuk.affinitas.personalitytest.databinding.QuestionScreenBinding;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -115,6 +118,12 @@ public class QuestionActivity extends Activity {
             implements QAPageFragment.OnAnswerConfirmListener {
         private final List<IQuestion> mData;
 
+        /**
+         * Container for selected user answers.
+         * FIXME: Possible runtime Localisation issues?!
+         */
+        private final Map<String, String> mSelectedAnswers = new HashMap<>();
+
         QAAdapter(FragmentManager fm, List<IQuestion> data) {
             super(fm);
             mData = data;
@@ -135,11 +144,16 @@ public class QuestionActivity extends Activity {
 
         @Override
         public int getCount() {
-            return mData != null ? mData.size() : 0;
+            // in same time only one not answered question available
+            return mData == null || mData.isEmpty() ? 0 : mSelectedAnswers.size() + 1;
         }
 
         @Override
         public void onAnswerConfirmed(String question, String answer) {
+            // update answers list request update to show new page
+            mSelectedAnswers.put(question, answer);
+            notifyDataSetChanged();
+
             Toast.makeText(QuestionActivity.this,
                     "Question: " + question + "\nAnswer: " + answer, Toast.LENGTH_SHORT)
                     .show();

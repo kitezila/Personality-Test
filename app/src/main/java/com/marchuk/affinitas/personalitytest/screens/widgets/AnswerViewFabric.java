@@ -13,12 +13,12 @@ import com.marchuk.affinitas.personalitytest.data.AnswerVariants;
  */
 public class AnswerViewFabric {
 
-    public static View constructAnswerView(@NonNull AnswerVariants answerVariants, LayoutInflater inflater) {
+    public static View constructAnswerView(@NonNull AnswerVariants answerVariants,
+                                           LayoutInflater inflater) {
 
         if (answerVariants instanceof AnswerVariants.Options) {
-            SingleOptionView v = new SingleOptionView(inflater.getContext());
-            v.setOptions((AnswerVariants.Options) answerVariants);
-            return v;
+            return new SingleOptionView(inflater.getContext())
+                    .showOptions((AnswerVariants.Options) answerVariants);
         } else {
             // TODO: make implementation more flexible
             throw new UnsupportedOperationException("Unknown answer type: " + answerVariants);

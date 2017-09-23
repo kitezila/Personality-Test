@@ -5,7 +5,6 @@ import android.databinding.ObservableField;
 import android.support.annotation.NonNull;
 import android.support.annotation.UiThread;
 import android.util.AttributeSet;
-import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
@@ -27,21 +26,20 @@ class SingleOptionView extends RadioGroup implements AnswerSelector {
     }
 
     @UiThread
-    public void setOptions(AnswerVariants.Options options) {
+    public SingleOptionView showOptions(AnswerVariants.Options options) {
         removeAllViews();
         for (String variant : options.getListOfAnswers()) {
             RadioButton rbtn = new RadioButton(getContext());
             rbtn.setText(variant);
-            rbtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (isChecked) {
-                        mAnswer.set(buttonView.getText().toString());
-                    }
+            rbtn.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (isChecked) {
+                    mAnswer.set(buttonView.getText().toString());
                 }
             });
             addView(rbtn);
         }
+
+        return this;
     }
 
     @NonNull
